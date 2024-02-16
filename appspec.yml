@@ -1,0 +1,44 @@
+version: 0.0
+os: linux
+files:
+  - source: /appspec.yml
+    destination: /home/ubuntu/foroden
+    overwrite: true
+  - source: /config
+    destination: /home/ubuntu/foroden/config
+    overwrite: true
+  - source: /index.html
+    destination: /var/www/html/
+    overwrite: true
+hooks:
+  BeforeInstall:
+    - location: config/install_dependencies.sh
+      timeout: 300
+      runas: root
+      permissions:
+        - object: config/install_dependencies.sh
+          pattern: "*"
+          mode: +x
+  AfterInstall:
+    - location: config/install.sh
+      timeout: 300
+      runas: root
+      permissions:
+        - object: config/install.sh
+          pattern: "*"
+          mode: +x
+    - location: config/start_server.sh
+      timeout: 30
+      runas: root
+      permissions:
+        - object: config/start_server.sh
+          pattern: "*"
+          mode: +x
+  ApplicationStop:
+    - location: config/stop_server.sh
+      timeout: 30
+      runas: root
+      permissions:
+        - object: config/stop_server.sh
+          pattern: "*"
+          mode: +x
